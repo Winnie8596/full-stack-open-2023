@@ -34,6 +34,10 @@ const PersonForm = ({
 };
 
 const Person = ({ filteredPerson, deleteName }) => {
+  if (!filteredPerson || !Array.isArray(filteredPerson)) {
+    return null; // or any fallback UI, depending on your requirements
+  }
+
   return (
     <div>
       {filteredPerson.map((person) => (
@@ -72,14 +76,28 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault();
-    const nameExists = persons.find(
-      (person) => person.name.toLowerCase() === newName.toLowerCase()
-    );
+
+    // Validate inputs
+    if (!newName || !newNumber) {
+      setMessage("Name and number cannot be empty");
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+      return;
+    }
+
+    const nameExists = Array.isArray(persons)
+      ? persons.find(
+          (person) => person.name.toLowerCase() === newName.toLowerCase()
+        )
+      : null;
 
     const nameObject = {
       name: newName,
       number: newNumber,
     };
+
+    console.log("Creating person with object:", nameObject); // Log nameObject
 
     if (nameExists) {
       const confirmed = window.confirm(
@@ -129,8 +147,11 @@ const App = () => {
           }, 5000);
         })
         .catch((error) => {
-          console.error("Error creating person:", error.message);
-          setMessage(`Error: ${error.message}`);
+          console.error(
+            "Error creating person:",
+            error.response?.data || error.message
+          );
+          setMessage(`Error: ${error.response?.data?.error || error.message}`);
           setTimeout(() => {
             setMessage(null);
           }, 5000);
