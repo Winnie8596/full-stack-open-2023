@@ -1,9 +1,9 @@
-post http://localhost:3001/api/blogs
+post http://localhost:3002/api/blogs
 Content-Type: application/json
 
 {
     "title": "Example blog",
-    "author": "sonal agrawal",
-    "url": "example.com",
+    "author": "wini",
+    "url": "wini.com",
     "likes": 1
 }
